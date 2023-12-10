@@ -1,36 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankConsoleApp.Data
 {
-    internal class BankAccount
+    public class BankAccount
     {
         private decimal _balance = 0;
 
-        public BankAccount(string accountNumber, string password)
+        public BankAccount(string accountNumber, string password, decimal balance)
         {
             AccountNumber = accountNumber;
             Password = password;
+            Balance = balance;
         }
 
         public decimal Balance { get { return _balance; } set { _balance = value; } }
         public string AccountNumber { get; set; }
         public string Password { get; set; }
 
-        public delegate void BalanceOperation(BankAccount account, int total);
-        public void Translation(BankAccount account, int total)
+        public delegate void DepositOp(BankAccount account, decimal amount);
+
+        public delegate void WithdrawalOp(BankAccount account, decimal amount);
+
+        public void Deposit(BankAccount account, decimal amount)
         {
-            if (_balance - total > 0)
+            if (amount > 0)
             {
-                account.Balance += total;
-                _balance -= total;
+                account.Balance += amount;
+                Console.WriteLine($"Deposited {amount}. New balance: {account.Balance}");
             }
             else
             {
-                Console.WriteLine("Not enf money");
+                Console.WriteLine("Invalid deposit amount");
+            }
+        }
+
+        public void Withdrawal(BankAccount account, decimal amount)
+        {
+            if (_balance - amount >= 0)
+            {
+                account.Balance -= amount;
+                Console.WriteLine($"Withdrawn {amount}. New balance: {account.Balance}");
+            }
+            else
+            {
+                Console.WriteLine("You cannot do withdrawal");
             }
         }
     }
