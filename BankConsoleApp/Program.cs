@@ -58,7 +58,6 @@ void Menu()
                     int sum = Convert.ToInt32(Console.ReadLine());
                     account1.Transaction(account2, sum);
                     Menu();
-                    Console.Clear();
                 }
             }
             else
@@ -69,7 +68,6 @@ void Menu()
                     int sum = Convert.ToInt32(Console.ReadLine());
                     account2.Transaction(account1, sum);
                     Menu();
-                    Console.Clear();
                 }
             }
         }
@@ -83,7 +81,6 @@ void Menu()
                 int sum = Convert.ToInt32(Console.ReadLine());
                 account1.TopUpDown(account1, sum);
                 Menu();
-                Console.Clear();
             }
             else
             {
@@ -91,7 +88,6 @@ void Menu()
                 int sum = Convert.ToInt32(Console.ReadLine());
                 account2.TopUpDown(account2, sum);
                 Menu();
-                Console.Clear();
             }
         }
         else if (action == "3")
@@ -102,13 +98,11 @@ void Menu()
             {
                 account1.ChangePasswordOrBill();
                 Menu();
-                Console.Clear();
             }
             else
             {
                 account2.ChangePasswordOrBill();
                 Menu();
-                Console.Clear();
             }
         }
         else if (action == "4")

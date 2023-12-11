@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace BankConsoleApp.Data
 {
-    delegate void BalanceOperation(string msg);
+    public delegate void BalanceOperation(string msg);
     delegate void BalanceTopUpDown(string action);
     delegate void ChangePasswordOrBill(string msg);
+
     internal class BankAccount
     {
         private decimal _balance = 0;
+
+        public event BalanceOperation? Message;
 
         public BankAccount(string accountNumber, string password, decimal balance = 1000)
         {
@@ -54,10 +57,12 @@ namespace BankConsoleApp.Data
             {
                 account.Balance += total;
                 _balance -= total;
+                 
                 Operation?.Invoke($"Операция успешно выполнена! Сумма в размере {total} переведна на счет: {account.AccountNumber}. Ваш текущий баланс: {_balance}");
             }
             else
             {
+                 
                 Operation?.Invoke($"Недостаточно средств, пополните свой баланс! Ваш текущий баланс: {_balance}");
             }
         }
@@ -70,22 +75,26 @@ namespace BankConsoleApp.Data
             if (action == "1")
             {
                 _balance += total;
-                Console.WriteLine($"Вы пополнили баланс {total}, ваш текущий баланс {_balance}");
+                Message += EventMessage;
+                Message?.Invoke($"Вы пополнили баланс {total}, ваш текущий баланс {_balance}");
             }
             else if (action == "2")
             {
                 if (total > _balance)
                 {
+                     
                     Console.WriteLine("Недостаточно средств");
                 }
                 else
                 {
                     _balance -= total;
-                    Console.WriteLine($"Вы сняли со счета {total}, ваш текущий баланс {_balance}");
+                    Message += EventMessage;
+                    Message?.Invoke($"Вы сняли со счета {total}, ваш текущий баланс {_balance}");
                 }
             }
             else
             {
+                 
                 Console.WriteLine("Неверный тип операции!");
             }
 
@@ -100,27 +109,35 @@ namespace BankConsoleApp.Data
             if (action == "1")
             {
                 string NewPassword = Console.ReadLine();
-                if (NewPassword == null) { Console.WriteLine("Пароль не может ббыть пустым!"); }
+                if (NewPassword == null) { Console.WriteLine("Пароль не может быть пустым!"); }
                 else 
                 { 
                     Password = NewPassword;
+                     
                     OperationChange?.Invoke("Вы успешно сменили пароль!");
                 }
             }
             else if (action == "2")
             {
                 string NewBill = Console.ReadLine();
-                if (NewBill == null) { Console.WriteLine("Пароль не может ббыть пустым!"); }
+                if (NewBill == null) { Console.WriteLine("Пароль не может быть пустым!"); }
                 else 
                 { 
                     AccountNumber = NewBill;
+                     
                     OperationChange?.Invoke("Вы успешно сменили пароль!");
                 }
             }
             else
             {
+                 
                 Console.WriteLine("Выбран неверный тип операции!");
             }
+        }
+
+        public void EventMessage(string msg)
+        {
+            Console.WriteLine(msg);
         }
     }
 }
