@@ -1,37 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BankConsoleApp.Data
+﻿internal class BankAccount
 {
-    internal class BankAccount
+    private decimal _balance = 100;
+
+    // Пример 1 (П1)
+    // делегат void c аргументом string
+    private delegate void NotificationHandler(string message);
+    // событие NotificationHandler
+    private event NotificationHandler Notify;
+
+    public BankAccount(string accountNumber, string password)
     {
-        private decimal _balance = 0;
+        // П1
+        // тут мы условно "пихаем" то что должно произойти во время отработки события
+        Notify += PrintMessage;
 
-        public BankAccount(string accountNumber, string password)
+        AccountNumber = accountNumber;
+        Password = password;
+
+        Console.WriteLine($"Счет №{AccountNumber} открыт! Баланс счета {_balance}₽");
+    }
+
+    public string AccountNumber { get; set; }
+    public string Password { get; set; }
+    public decimal Balance
+    {
+        get { return _balance; }
+        set
         {
-            AccountNumber = accountNumber;
-            Password = password;
+            // П1
+            // вызываем событие
+            Notify?.Invoke($"Баланс счета {AccountNumber} был изменен. Остаток {value}₽");
+            _balance = value;
         }
+    }
 
-        public decimal Balance { get { return _balance; } set { _balance = value; } }
-        public string AccountNumber { get; set; }
-        public string Password { get; set; }
+    // П1
+    // метод вывода сообщения
+    public void PrintMessage(string msg)
+    {
+        Console.WriteLine(msg);
+    }
 
-        public delegate void BalanceOperation(BankAccount account, int total);
-        public void Translation(BankAccount account, int total)
+    public void Translation(BankAccount account, int total)
+    {
+        if (_balance - total > 0)
         {
-            if (_balance - total > 0)
-            {
-                account.Balance += total;
-                _balance -= total;
-            }
-            else
-            {
-                Console.WriteLine("Not enf money");
-            }
+            account.Balance += total;
+            _balance -= total;
+        }
+        else
+        {
+            Console.WriteLine("Not enf money");
         }
     }
 }
