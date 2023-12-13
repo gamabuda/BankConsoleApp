@@ -1,39 +1,102 @@
-﻿namespace BankAccount
+﻿public class BankAccount
 {
-    public class Account
+    private decimal _balance;
+
+    private delegate void ConsoleColorHandler(string msg, TextColor color);
+    private event ConsoleColorHandler _isSendColorMessage;
+
+    public BankAccount(string fullName, string password, decimal balance = 0)
     {
-        public int Sum { get; private set; }
-        public string Login { get; private set; }
-        public string Password { get; private set; }
-        public Account(int sum, string login, string password)
+        AccountNumber = Guid.NewGuid().ToString();
+
+        _balance = balance;
+        FullName = fullName;
+        Password = password;
+
+        Console.WriteLine($"New BankAccount was created!\n\nWelcome {FullName}" +
+            $"\n\tAccount number: {AccountNumber}" +
+            $"\n\tPassword: {HidePassword()}" +
+            $"\n\tBalance: {Balance}$\n");
+
+        _isSendColorMessage = PrintMessage;
+    }
+
+    public string FullName { get; }
+    public string AccountNumber { get; private set; }
+    public string Password { get; private set; }
+    public decimal Balance
+    {
+        get => _balance;
+        private set
         {
-            Sum = sum;
-            Login = login;
-            Password = password;
+            if (_balance > value)
+                _isSendColorMessage?.Invoke($"-{_balance - value}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Red);
+            else
+                _isSendColorMessage?.Invoke($"+{value - _balance}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Green);
+
+            _balance = value;
+            Console.WriteLine($"Result: {Balance}$\n");
+        }
+    }
+
+    private void PrintMessage(string msg, TextColor color)
+    {
+        switch (color)
+        {
+            case TextColor.Green:
+                Console.ForegroundColor = ConsoleColor.Green;
+                break;
+            case TextColor.Red:
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
+            case TextColor.Defult:
+                Console.ResetColor();
+                break;
         }
 
-        public void Put(int _sum) => Sum += _sum;
-        public void Take(int sum)
-        {
-            if (Sum >= sum)
-            {
-                Sum -= sum;
-            }
-        }
-        public void Balance()
-        {
-            Console.WriteLine(Sum);
-        }
-        public void MonetaryTransactions(int index)
-        {
-            Console.WriteLine("Введите сумму:");
-            int sum = Convert.ToInt32(Console.ReadLine());
-            Console.Clear();
+        Console.WriteLine(msg);
 
-            if (index == 3) { Put(sum); }
-            if (index == 4) { Take(sum); }
+        Console.ResetColor();
+    }
+
+    private string HidePassword()
+    {
+        string s = "";
+        for (int i = 0; i < Password.Length; i++)
+        {
+            s += '*';
         }
-        public void ChangeLogin(string _login) => Login = _login;
-        public void ChangePassword(string _password) => Password = _password;
+        return s;
+    }
+
+    public bool Try2Replenish(decimal sum)
+    {
+        if (sum > 500000)
+        {
+            _isSendColorMessage?.Invoke("You're over the limit\n", TextColor.Red);
+            return false;
+        }
+
+        Balance += sum;
+        return true;
+    }
+
+    public bool Try2Withdraw(decimal sum)
+    {
+        if (_balance - sum < 0)
+        {
+            _isSendColorMessage?.Invoke("You don't have enough money.\n", TextColor.Red);
+            return false;
+        }
+
+        Balance -= sum;
+        return true;
+    }
+
+    private enum TextColor
+    {
+        Green,
+        Red,
+        Defult
     }
 }
