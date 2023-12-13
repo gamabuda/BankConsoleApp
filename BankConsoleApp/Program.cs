@@ -10,7 +10,6 @@ BankAccount account2 = new BankAccount("000002", "zxcvbn");
 Console.WriteLine($"\nСчет {account1.AccountNumber}. Операции:");
 account1.Transaction(account2, 599);
 account1.ExchangeCurrency(401);
-account1.Balance = 0;
 
 Console.WriteLine("\n------------------------------------------------------------------------------------------------");
 
