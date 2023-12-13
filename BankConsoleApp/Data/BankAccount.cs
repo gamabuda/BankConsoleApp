@@ -1,37 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BankConsoleApp.Data
+﻿namespace BankAccount
 {
-    internal class BankAccount
+    public class Account
     {
-        private decimal _balance = 0;
-
-        public BankAccount(string accountNumber, string password)
+        public int Sum { get; private set; }
+        public string Login { get; private set; }
+        public string Password { get; private set; }
+        public Account(int sum, string login, string password)
         {
-            AccountNumber = accountNumber;
+            Sum = sum;
+            Login = login;
             Password = password;
         }
 
-        public decimal Balance { get { return _balance; } set { _balance = value; } }
-        public string AccountNumber { get; set; }
-        public string Password { get; set; }
-
-        public delegate void BalanceOperation(BankAccount account, int total);
-        public void Translation(BankAccount account, int total)
+        public void Put(int _sum) => Sum += _sum;
+        public void Take(int sum)
         {
-            if (_balance - total > 0)
+            if (Sum >= sum)
             {
-                account.Balance += total;
-                _balance -= total;
-            }
-            else
-            {
-                Console.WriteLine("Not enf money");
+                Sum -= sum;
             }
         }
+        public void Balance()
+        {
+            Console.WriteLine(Sum);
+        }
+        public void MonetaryTransactions(int index)
+        {
+            Console.WriteLine("Введите сумму:");
+            int sum = Convert.ToInt32(Console.ReadLine());
+            Console.Clear();
+
+            if (index == 3) { Put(sum); }
+            if (index == 4) { Take(sum); }
+        }
+        public void ChangeLogin(string _login) => Login = _login;
+        public void ChangePassword(string _password) => Password = _password;
     }
 }
