@@ -30,7 +30,7 @@ void Registration()
     Console.WriteLine(" Создайте пароль:");
     password = Console.ReadLine(); //пароль
 
-    Account acc = new Account(0, login, password);
+    Account acc = new Account(0, login, password, id);
     accounts.Add(id, acc);
 
     Console.Clear();
@@ -40,6 +40,7 @@ bool Entry(string _login, string _password)
 {
     if (_login == accounts[id].Login && _password == accounts[id].Password)
     {
+        Console.Clear ();
         return false;
     }
     else
@@ -110,12 +111,18 @@ void Menu()
                 break;
             case ConsoleKey.D3:
                 accounts[id].MonetaryTransactions(keyInfo);
+                Thread.Sleep(2000);
+                Console.Clear();
                 break;
             case ConsoleKey.D4:
                 accounts[id].MonetaryTransactions(keyInfo);
+                Thread.Sleep(2000);
+                Console.Clear();
                 break;
             case ConsoleKey.D5:
                 Console.WriteLine($"До новых встреч, {accounts[id].Login}");
+                Thread.Sleep(2000);
+                Console.Clear();
                 menuFlag = false;
                 break;
         }
