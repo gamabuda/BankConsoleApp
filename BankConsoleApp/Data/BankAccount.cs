@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Net;
+using System.IO;
+using System.Xml.Linq;
+using System.Text.Json;
 
 namespace BankConsoleApp.Data
 {
@@ -6,15 +10,15 @@ namespace BankConsoleApp.Data
     {
         private decimal _balance = 0;
 
-        public BankAccount(string accountNumber, string password, decimal balance)
+        public BankAccount(string login, string password, decimal balance)
         {
-            AccountNumber = accountNumber;
-            Password = password;
+            Login = login;
             Balance = balance;
+            Password = password;
         }
 
         public decimal Balance { get { return _balance; } set { _balance = value; } }
-        public string AccountNumber { get; set; }
+        public string Login { get; set; }
         public string Password { get; set; }
 
         public delegate void DepositOp(BankAccount account, decimal amount);
@@ -45,6 +49,11 @@ namespace BankConsoleApp.Data
             {
                 Console.WriteLine("You cannot do withdrawal");
             }
+        }
+
+        public string GetFormattedInfo()
+        {
+            return $"{Login},{Password},{Balance}";
         }
     }
 }
