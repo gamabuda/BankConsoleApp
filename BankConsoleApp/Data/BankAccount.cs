@@ -16,6 +16,9 @@ namespace BankConsoleApp.Data
         private decimal _balance = 0;
 
         public event BalanceOperation? Message;
+        public event Action? PropertyChanged;
+        public event Action? MethodCalled;
+        public event Action? ConstructorCalled;
 
         public BankAccount(string accountNumber, string password, decimal balance = 1000)
         {
@@ -26,13 +29,23 @@ namespace BankConsoleApp.Data
             RegisterHandler(PrintOperationMessage);
             RegisterHandlerTop(OperationTopUpDown);
 
+            ConstructorCalled?.Invoke();
+
         }
         public BalanceOperation? Operation;
         public BalanceTopUpDown? OperationTopUpDown;
         public ChangePasswordOrBill? OperationChange;
 
 
-        public decimal Balance { get { return _balance; } set { _balance = value; } }
+        public decimal Balance
+        {
+            get { return _balance; }
+            set
+            {
+                _balance = value;
+                PropertyChanged?.Invoke();
+            }
+        }
         public string AccountNumber { get; set; }
         public string Password { get; set; }
         public void RegisterHandler(BalanceOperation del)
