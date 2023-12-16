@@ -3,19 +3,13 @@
 BankAccount account1 = new BankAccount("212213", "qwerty");
 BankAccount account2 = new BankAccount("01050657", "zxcvbn");
 
+
 Console.Write($"Вход в систему банка C# \nВведите Ваш номер счета:");
 string Entrance = Console.ReadLine();
-string Authentication;
-
-// Проверяем, если номер счета не совпадает ни с одним из счетов
-if (!(Entrance == account1.AccountNumber || Entrance == account2.AccountNumber))
+Console.WriteLine($"Введите Ваш пароль:");
+string Authentication = Console.ReadLine();
+if ((Entrance == account1.AccountNumber) || (Entrance == account2.AccountNumber))
 {
-    Console.WriteLine("Неверный логин!");
-}
-else
-{
-    Console.WriteLine($"Введите Ваш пароль:");
-    Authentication = Console.ReadLine();
     if (Entrance == account1.AccountNumber)
     {
         if (Authentication == account1.Password)
@@ -40,11 +34,12 @@ else
             Console.WriteLine("Неверный пароль!");
         }
     }
+    else { Console.WriteLine("Неверные учетные данные!"); }
 }
+else { Console.WriteLine("Неверные учетные данные!"); }
 
 
-
-    void Menu()
+void Menu()
 {
     bool exit = true;
     Console.WriteLine($"Банк C# рад приветствовать вас.  Ваш список возможностей:\n1 - перевести деньги клиенту\n2 - снять наличные / пополнить баланс\n3 - сменить пароль или номер счета\n4 - выйти");
@@ -79,86 +74,22 @@ else
         }
         else if (operation == "2")
         {
-            Console.WriteLine("Что вы хотите сделать? \n1 - Пополнить счет\n2 - Снять со счета");
-            string action = Console.ReadLine();
-
-            if (action == "1")
-            {
-                Console.Write("Введите ваш номер счета: ");
-                string accountNumber = Console.ReadLine();
-
-                if (accountNumber == account1.AccountNumber)
-                {
-                    Console.WriteLine("Введите сумму пополнения: ");
-                    int sum = Convert.ToInt32(Console.ReadLine());
-                    account1.TopUpDown(account1, sum);
-                }
-                else if (accountNumber == account2.AccountNumber)
-                {
-                    Console.WriteLine("Введите сумму пополнения: ");
-                    int sum = Convert.ToInt32(Console.ReadLine());
-                    account2.TopUpDown(account2, sum);
-                }
-                else
-                {
-                    Console.WriteLine("Неверный номер счета!");
-                }
-            }
-            else if (action == "2")
-            {
-                Console.Write("Введите ваш номер счета: ");
-                string accountNumber = Console.ReadLine();
-
-                if (accountNumber == account1.AccountNumber)
-                {
-                    Console.WriteLine("Введите сумму снятия: ");
-                    int sum = Convert.ToInt32(Console.ReadLine());
-                    account1.TopUpDown(account1, -sum);
-                }
-                else if (accountNumber == account2.AccountNumber)
-                {
-                    Console.WriteLine("Введите сумму снятия: ");
-                    int sum = Convert.ToInt32(Console.ReadLine());
-                    account2.TopUpDown(account2, -sum);
-                }
-                else
-                {
-                    Console.WriteLine("Неверный номер счета!");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Неверный тип операции!");
-            }
-
-            Menu(account1, account2);
-        }
-        else if (operation == "2")
-        {
             Console.Write("Введите ваш номер счета: ");
-            string accountNumber = Console.ReadLine();
-
-            if (accountNumber == account1.AccountNumber)
+            string AccountNumber = Console.ReadLine();
+            if (AccountNumber == account1.AccountNumber)
             {
-                account1.ChangePasswordOrBill();
-            }
-            else if (accountNumber == account2.AccountNumber)
-            {
-                account2.ChangePasswordOrBill();
+                Console.WriteLine("Введите сумму списания / пополнения: ");
+                int sum = Convert.ToInt32(Console.ReadLine());
+                account1.TopUpDown(account1, sum);
+                Menu();
             }
             else
             {
-                Console.WriteLine("Неверный номер счета!");
+                Console.WriteLine("Введите сумму списания / пополнения: ");
+                int sum = Convert.ToInt32(Console.ReadLine());
+                account2.TopUpDown(account2, sum);
+                Menu();
             }
-
-            Menu(account1, account2);
-        }
-        else
-        {
-            Console.WriteLine("Неверный тип операции!");
-        }
-    }
-}
         }
         else if (operation == "3")
         {
