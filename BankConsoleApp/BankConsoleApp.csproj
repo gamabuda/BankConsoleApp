@@ -17,6 +17,9 @@
     <None Update="Data\BankAccountUsers.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\CaptchaWords.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Users.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -13,8 +13,8 @@ namespace BankConsoleApp.Data
         public BankAccount(string login, string password, decimal balance)
         {
             Login = login;
-            Balance = balance;
             Password = password;
+            Balance = balance;
         }
 
         public decimal Balance { get { return _balance; } set { _balance = value; } }
@@ -25,6 +25,21 @@ namespace BankConsoleApp.Data
 
         public delegate void WithdrawalOp(BankAccount account, decimal amount);
 
+        public delegate void TransferOp(BankAccount source, BankAccount destination, decimal amount);   
+
+        public void Transfer(BankAccount source, BankAccount destination, decimal amount)
+        {
+            if (amount > 0 && source.Balance >= amount)
+            {
+                source.Balance -= amount;
+                destination.Balance += amount;
+                Console.WriteLine($"Transferred {amount} from {source.Login} to {destination.Login}");
+            }
+            else
+            {
+                Console.WriteLine("Invalid transfer amount or insufficient funds.");
+            }
+        }
         public void Deposit(BankAccount account, decimal amount)
         {
             if (amount > 0)
