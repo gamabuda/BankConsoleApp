@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BankConsoleApp.Data.ITransport;
 
 namespace BankConsoleApp.Data
 {
@@ -10,7 +11,7 @@ namespace BankConsoleApp.Data
     public delegate void WithdrawalOperation(string msg);
     public delegate void ExchangeOperation(string msg);
 
-    internal class BankAccount
+    internal class BankAccount : ITransport
     {
         private decimal _balance = 0;
         private decimal _dollarsBallance = 0;
@@ -34,9 +35,9 @@ namespace BankConsoleApp.Data
             Rate = rate;
             DollarsBallance = dollarBalance;
 
-            TransactionOperationHandler(PrintOperationMessage);
-            WithdrawalOperationHandler(PrintOperationMessage);
-            ExchangeOperationHandler(PrintOperationMessage);
+            TransactionOperationHandler(PrintMessage);
+            WithdrawalOperationHandler(PrintMessage);
+            ExchangeOperationHandler(PrintMessage);
 
             Console.ForegroundColor = ConsoleColor.Green;
             PrintData?.Invoke($"Открыт новый счет! Номер: {accountNumber} | Пароль: {password} | Баланс (₽): {balance} | Баланс ($): {dollarBalance}");
@@ -48,9 +49,9 @@ namespace BankConsoleApp.Data
 
         public delegate void AccountHandler(string msg);
 
-        public event AccountHandler? CurancyAccountChanged = PrintOperationMessage;
-        public event AccountHandler? Bankruptcy = PrintOperationMessage;
-        public event AccountHandler? PrintData = PrintOperationMessage;
+        public event AccountHandler? CurancyAccountChanged = PrintMessage;
+        public event AccountHandler? Bankruptcy = PrintMessage;
+        public event AccountHandler? PrintData = PrintMessage;
         public decimal Balance { 
             get => _balance;
             set 
@@ -69,7 +70,7 @@ namespace BankConsoleApp.Data
         public void WithdrawalOperationHandler(WithdrawalOperation del) => OperationWithdrawal += del;
         public void ExchangeOperationHandler(ExchangeOperation del) => OperationExchange += del;
         
-        private static void PrintOperationMessage(string msg) => Console.WriteLine(msg);
+        private static void PrintMessage(string msg) => Console.WriteLine(msg);
 
         public void  Transaction(BankAccount account, int total)
         {
@@ -116,5 +117,53 @@ namespace BankConsoleApp.Data
                 OperationWithdrawal?.Invoke($"Недостаточно средств для проведения операции. Ваш текущий баланс: {_balance}");
             }
         }
+
+        public event Message? CarAction = PrintMessage;
+        private int _currentSpeed = 0;
+        public string Model { get; set; }
+        public int MaxSpeed { get; set; }
+        public int CurrentSpeed {
+            get => _currentSpeed;
+            set
+            {
+                _currentSpeed = value;
+                if (_currentSpeed == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    CarAction?.Invoke("Машина стоит.");
+                    Console.ResetColor();
+                } else if (_currentSpeed < 90)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    CarAction?.Invoke("Машина едет с нормальной скоростью.");
+                    Console.ResetColor();
+                } else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    CarAction?.Invoke("Ты че отбитый? Куда гонишь?!");
+                    Console.ResetColor();
+                }
+            }
+        }
+        public string Color { get; set; }
+
+        public void CreateTransort(string model, int maxSpeed, string color)
+        {
+            Model = model;
+            MaxSpeed = maxSpeed; 
+            Color = color;
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            CarAction?.Invoke($"Создана новая машина! Модель: {Model} | Максимальная скорость: {MaxSpeed}км/ч | Цвет: {Color}");
+            Console.ResetColor();
+        }
+
+        public void CarBreakdown() {
+            CurrentSpeed = 0;
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            CarAction?.Invoke("Машина сломалась!");
+            Console.ResetColor();
+        }
+
     }
 }
