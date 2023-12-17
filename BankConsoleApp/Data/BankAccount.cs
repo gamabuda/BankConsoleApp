@@ -2,8 +2,12 @@
 {
     private decimal _balance;
 
+
     private delegate void ConsoleColorHandler(string msg, TextColor color);
     private event ConsoleColorHandler _isSendColorMessage;
+    private event ConsoleColorHandler OnBalanceChanged;
+    private event ConsoleColorHandler OnReplenishLimitExceeded;
+    private event ConsoleColorHandler OnInsufficientFunds;
 
     public BankAccount(string fullName, string password, decimal balance = 0)
     {
@@ -19,6 +23,10 @@
             $"\n\tBalance: {Balance}$\n");
 
         _isSendColorMessage = PrintMessage;
+
+        OnBalanceChanged += PrintMessage;
+        OnReplenishLimitExceeded += PrintMessage;
+        OnInsufficientFunds += PrintMessage;
     }
 
     public string FullName { get; }
@@ -30,14 +38,15 @@
         private set
         {
             if (_balance > value)
-                _isSendColorMessage?.Invoke($"-{_balance - value}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Red);
+                OnBalanceChanged?.Invoke($"-{_balance - value}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Red);
             else
-                _isSendColorMessage?.Invoke($"+{value - _balance}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Green);
+                OnBalanceChanged?.Invoke($"+{value - _balance}$ \nAccount number: {AccountNumber}\nDateTime: {DateTime.Now}", TextColor.Green);
 
             _balance = value;
             Console.WriteLine($"Result: {Balance}$\n");
         }
     }
+
 
     private void PrintMessage(string msg, TextColor color)
     {
@@ -73,7 +82,7 @@
     {
         if (sum > 500000)
         {
-            _isSendColorMessage?.Invoke("You're over the limit\n", TextColor.Red);
+            OnReplenishLimitExceeded?.Invoke("You're over the limit\n", TextColor.Red);
             return false;
         }
 
@@ -85,7 +94,7 @@
     {
         if (_balance - sum < 0)
         {
-            _isSendColorMessage?.Invoke("You don't have enough money.\n", TextColor.Red);
+            OnInsufficientFunds?.Invoke("You don't have enough money.\n", TextColor.Red);
             return false;
         }
 
