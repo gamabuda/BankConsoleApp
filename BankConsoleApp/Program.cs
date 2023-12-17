@@ -1,4 +1,5 @@
 ﻿using BankAccount;
+using BankConsoleApp.Data.Transports;
 using System.Security.Principal;
 
 Dictionary<int, Account> accounts = new Dictionary<int, Account>(); //библиотека аккаунтов
@@ -10,6 +11,14 @@ int id = 0;
 bool menuFlag = true;
 
 ConsoleKeyInfo keyInfo;
+
+List<Car> cars = new List<Car>(); //по-быстрому машины создал
+Car car1 = new Car(100, "Lada Kalina", "чёрного цвета");
+Car car2 = new Car(100, "Lada Vesta", "чёрного цвета");
+Car car3 = new Car(100, "Lada Granta", "чёрного цвета");
+cars.Add(car1);
+cars.Add(car2);
+cars.Add(car3);
 
 while (menuFlag)
 {
@@ -94,7 +103,7 @@ void Menu()
 {
     while (menuFlag)
     {
-        Console.WriteLine($" Добрый день, {accounts[id].Login}, чем сегодня займёмся?\n  1 - Профиль\n  2 - Узнать баланс\n  3 - Пополнить счёт\n  4 - Снять со счёта\n  5 - Выйти из аккаунта");
+        Console.WriteLine($" Добрый день, {accounts[id].Login}, чем сегодня займёмся?\n  1 - Профиль\n  2 - Узнать баланс\n  3 - Пополнить счёт\n  4 - Снять со счёта\n  5 - Арендовать машину\n  6 - Выйти из аккаунта");
         keyInfo = Console.ReadKey();
         Console.Clear();
 
@@ -120,6 +129,11 @@ void Menu()
                 Console.Clear();
                 break;
             case ConsoleKey.D5:
+                CarsRent();
+                Thread.Sleep(2000);
+                Console.Clear();
+                break;
+            case ConsoleKey.D6:
                 Console.WriteLine($"До новых встреч, {accounts[id].Login}");
                 Thread.Sleep(2000);
                 Console.Clear();
@@ -155,5 +169,30 @@ void Profile()
                 break;
         }
 
+    }
+}
+
+void CarsRent()
+{
+    int carInd = 1;
+
+    Console.WriteLine(" Выберете машину из предложенных:");
+    foreach(Car car in cars)
+    {
+        Console.WriteLine($" {carInd} - {car.Model} {car.Color} {car.MoveSpeed} ");
+        carInd++;
+    }
+    
+    string model = Console.ReadLine();
+    Console.Clear();
+
+    foreach(Car car in cars)
+    {
+        if(car.Model == model)
+        {
+            cars.Remove(car);
+            car.IsRent();
+            break;
+        }
     }
 }
