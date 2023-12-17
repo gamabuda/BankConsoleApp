@@ -77,7 +77,7 @@ namespace BankConsoleApp.Data
             if (_balance - total >= 0)
             {
                 account.Balance += total;
-                _balance -= total;
+                Balance -= total;
                 Operation?.Invoke($"Операция выполнена успешно! Сумма в размере {total}₽ переведена на счет: {account.AccountNumber}. Ваш текущий баланс: {_balance}₽");
             }
             else
@@ -90,7 +90,7 @@ namespace BankConsoleApp.Data
         {
             if (_balance - total >= 0)
             {
-                _balance -= total;
+                Balance -= total;
                 OperationWithdrawal?.Invoke($"Операция выполнена успешно! Сумма в размере {total}₽ снята с Вашего счета. Ваш текущий баланс: {_balance}₽");
             }
             else
@@ -103,7 +103,7 @@ namespace BankConsoleApp.Data
         {
             if (_balance - total >= 0)
             {
-                _balance -= total;
+                Balance -= total;
                 decimal amount = Math.Round(total / Rate, 2, MidpointRounding.AwayFromZero);
                 _dollarsBallance += amount;
                 OperationWithdrawal?.Invoke($"Операция выполнена успешно! {total}₽ были обменены на {amount}$.\nВаш текущий баланс в рублях: {_balance}₽\nВаш текущий баланс в долларах: {_dollarsBallance}$");
