@@ -4,6 +4,12 @@ while (true)
 {
     Console.Write("Enter password: ");
     string password = Console.ReadLine();
+    if (bankAccount1.Password != password)
+    {
+        Console.WriteLine("Incorrect password. Please try again.");
+        continue;
+    }
+
     Console.Write("Enter sum: ");
     decimal sum = Convert.ToDecimal(Console.ReadLine());
 

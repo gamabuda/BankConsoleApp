@@ -4,6 +4,7 @@ public class BankAccount
 {
     private decimal _balance;
     private int _passwordAttempts;
+    private bool _isLocked;
 
     private delegate void ConsoleColorHandler(string msg, TextColor color);
     private event ConsoleColorHandler _isSendColorMessage;
@@ -79,6 +80,7 @@ public class BankAccount
             if (_passwordAttempts >= 3)
             {
                 _isSendColorMessage?.Invoke("You have exceeded the number of attempts. Account locked.\n", TextColor.Red);
+                _isLocked = true;
             }
             else
             {
@@ -127,13 +129,20 @@ public class BankAccount
         return s;
     }
 
-    public bool Try2Replenish(string password, decimal sum)
+    public bool Try2Transfer(string password, decimal sum, string recipientAccountNumber)
     {
+        if (_isLocked)
+        {
+            Console.WriteLine("Account is locked.");
+            return false;
+        }
         _passwordAttempt?.Invoke(password);
+
         if (sum > 500000)
         {
-            _isSendColorMessage?.Invoke("You're over the limit\n", TextColor.Red);
+            _isSendColorMessage?.Invoke("You're over the limit\n", TextColor.Blue);
             return false;
+
         }
 
         Balance += sum;
@@ -142,11 +151,16 @@ public class BankAccount
 
     public bool Try2Withdraw(string password, decimal sum)
     {
+        if (_isLocked)
+        {
+            Console.WriteLine("Account is locked.");
+        }
         _passwordAttempt?.Invoke(password);
         if (_balance - sum < 0)
         {
             _isSendColorMessage?.Invoke("You don't have enough money.\n", TextColor.Red);
             return false;
+
         }
 
         Balance -= sum;
