@@ -1,0 +1,14 @@
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.exe
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.deps.json
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.runtimeconfig.json
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.dll
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.pdb
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.AssemblyInfoInputs.cache
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.AssemblyInfo.cs
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.dll
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\refint\BankConsoleApp.dll
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.pdb
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.genruntimeconfig.cache
+C:\Users\Polina\Source\Repos\BankConsoleApp\BankConsoleApp\obj\Debug\net6.0\ref\BankConsoleApp.dll
