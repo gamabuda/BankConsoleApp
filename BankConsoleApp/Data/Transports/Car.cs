@@ -30,11 +30,7 @@ namespace BankConsoleApp.Data.Transports
             _isSendMessage += SendMessage;
         }
 
-        public bool IsRent()
-        {
-            Rent = true;
-            return Rent;
-        }
+        public bool IsRent() => Rent = true;
 
         public void SendMessage(string msg) 
         {

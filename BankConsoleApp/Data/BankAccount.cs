@@ -40,7 +40,9 @@
             Password = password;
             ID = iD;
 
-            _isSendColorMessage = PrintMessage;
+            _isSendColorMessage += PrintMessage;
+
+            _isSendColorMessage?.Invoke($"Спасибо, что выбрали нас, {Login}", TextColor.Green);
         }
 
         public void Put(int _sum)
@@ -53,7 +55,7 @@
             if (Sum >= sum)
             {
                 textColorIndex = 1;
-                Sum -= sum;
+                Sum -= sum + TakeCommission(sum);
             }
             else 
             {
@@ -86,6 +88,9 @@
                 case TextColor.DarkYellow:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
+                case TextColor.Blue:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
                 case TextColor.Defult:
                     Console.ResetColor();
                     break;
@@ -95,12 +100,19 @@
 
             Console.ResetColor();
         }
+        private int TakeCommission(int _sum)
+        {
+            _sum = (int)(_sum * 0.01);
+            _isSendColorMessage?.Invoke($" Взята коммиссия {_sum}$", TextColor.Blue);
+            return _sum;
+        }
 
         private enum TextColor
         {
             Red,
             DarkYellow,
             Green,
+            Blue,
             Defult
         }
 

@@ -88,7 +88,6 @@ void LogInToAcc()
             Registration();
             Console.Clear();
             Entry(accounts[id].Login, accounts[id].Password);
-            Console.WriteLine($"Спасибо, что выбрали нас, {accounts[id].Login}");
             break;
         default:
             {
