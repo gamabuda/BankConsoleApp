@@ -11,4 +11,3 @@ Console.WriteLine();
 account.doOperation("plusDengi", 1000);
 Console.WriteLine();
 account.doOperation("minusDengi", 1200);
->>>>>>> Stashed changes

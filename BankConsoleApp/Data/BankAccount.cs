@@ -65,5 +65,4 @@ public class BankAccount
     }
 
     public void vivod() => Console.WriteLine($"{FullName}, {Balance}, {_id}");
->>>>>>> Stashed changes
 }
