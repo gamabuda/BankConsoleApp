@@ -1,0 +1,14 @@
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.exe
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.deps.json
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.runtimeconfig.json
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.dll
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\bin\Debug\net6.0\BankConsoleApp.pdb
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.AssemblyInfoInputs.cache
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.AssemblyInfo.cs
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.dll
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\refint\BankConsoleApp.dll
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.pdb
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\BankConsoleApp.genruntimeconfig.cache
+C:\Users\Acer\Source\Repos\BankConsoleApp1\BankConsoleApp\obj\Debug\net6.0\ref\BankConsoleApp.dll

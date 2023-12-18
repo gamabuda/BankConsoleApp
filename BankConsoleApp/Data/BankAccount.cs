@@ -1,37 +1,75 @@
-﻿using System;
+﻿using BankConsoleApp.Data;
+using BankConsoleApp2.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankConsoleApp.Data
+
+public class BankAccount
 {
-    internal class BankAccount
+    private decimal _balance;
+    private string _fullname;
+    private string _id;
+    private string _password;
+    public List<Transport> transports = new();
+
+    public decimal Balance { get { return _balance; } set { _balance = value; } }
+    public string FullName { get { return _fullname; } set { _fullname = value; } }
+
+    private delegate void OperationSum(int sum);
+    private event OperationSum OperationSumCompleted;
+
+    public BankAccount(string fullname, decimal balance, string password)
     {
-        private decimal _balance = 0;
+        _fullname = fullname;
+        _balance = balance;
+        _password = password;
 
-        public BankAccount(string accountNumber, string password)
+        _id = Guid.NewGuid().ToString();
+
+        OperationSumCompleted += AccountCreated;
+        OperationSumCompleted.Invoke(0);
+    }
+
+    public void Operation(string operName, int sum)
+    {
+        switch (operName)
         {
-            AccountNumber = accountNumber;
-            Password = password;
+            case "addMoney":
+                OperationSumCompleted = addMoney;
+                break;
+            case "awayMoney":
+                OperationSumCompleted = awayMoney;
+                break;
         }
+        OperationSumCompleted(sum);
+    }
 
-        public decimal Balance { get { return _balance; } set { _balance = value; } }
-        public string AccountNumber { get; set; }
-        public string Password { get; set; }
+    public void addMoney(int sum)
+    {
+        _balance += sum;
+        Console.WriteLine($"На вашем счете пополнение на сумму: ({sum}). Ваш баланс: {_balance}");
+    }
 
-        public delegate void BalanceOperation(BankAccount account, int total);
-        public void Translation(BankAccount account, int total)
+    public void awayMoney(int sum)
+    {
+        if (_balance > sum)
         {
-            if (_balance - total > 0)
-            {
-                account.Balance += total;
-                _balance -= total;
-            }
-            else
-            {
-                Console.WriteLine("Not enf money");
-            }
+            _balance -= sum;
+            Console.WriteLine($"На вашем счете произошло списание на сумму: ({sum}). Ваш баланс: {_balance}");
         }
     }
+    public void AccountCreated(int sum) => Console.WriteLine($"Ваш аккаунт создан. ФИО: {_fullname}, ID: {_id}, Пароль: {_password}");
+
+    public void carsList()
+    {
+        foreach (Transport transport in transports)
+        {
+            Console.WriteLine(transport.ModelName);
+        }
+    }
+
+    public void outputCars() => Console.WriteLine($"{FullName}, {Balance}, {_id}");
 }
