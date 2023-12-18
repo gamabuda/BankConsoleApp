@@ -32,7 +32,7 @@ namespace BankConsoleApp.Data
         }
         public void Info(string msg)
         {
-            Console.WriteLine($"Самокат- {Model}, цвет: {Color}, макс скорость: {MaxSpeed}, категория: {Category}, бронь: {IsRented}, кол-во колес: {WheelCount}, мотор: {HasMotor}");
+            Console.WriteLine($"Самокат - {Model}, цвет: {Color}, макс скорость: {MaxSpeed}, категория: {Category}, бронь: {IsRented}, кол-во колес: {WheelCount}, мотор: {HasMotor}");
         }
     }
 }

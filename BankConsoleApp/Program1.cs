@@ -1,4 +1,7 @@
 ﻿
+using System.Collections.Generic;
+using System.Reflection;
+
 namespace BankConsoleApp.Data
 {
     class Program
@@ -6,14 +9,12 @@ namespace BankConsoleApp.Data
         static void Main()
         {
             BankAccount bankAccount1 = new BankAccount("Ivan Ivanov", "motherrussia", 100);
-            BankAccount bankAccount2 = new BankAccount("мамаягений", "шизофреник", 1000);
-            BankAccount bankAccount3 = new BankAccount("хочецаавтомат5", "555", 100000);
 
             while (true)
             {
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine();
-                if (bankAccount1.Password != password || bankAccount2.Password != password || bankAccount3.Password != password)
+                if (bankAccount1.Password != password)
                 {
                     Console.WriteLine("Incorrect password. Please try again.");
                     continue;
@@ -31,18 +32,22 @@ namespace BankConsoleApp.Data
                     Console.WriteLine("Withdrawal successful.");
                 }
 
-                Boat boat = new Boat("q", "green", 100, 2, true, 0, 1, 50);
-                Car car = new Car("qw", "black", 270, 1, false, 4, 12, 500);
-                Bike bicycle = new Bike("qwe", "purple", 170, 2, true, 2, 123, 5000);
-                Bicycle bike = new Bicycle("qwer", "pink", 80, 2, true, 2, 1234, 50000);
-                Scooter scooter = new Scooter("qwert", "blue", 160, 1, false, 2, 12345, 500000);
+                Boat boat = new Boat("лодка", "зеленый", 100, 2, true, 0, 1, 50);
+                Car car = new Car("тачка", "черный", 270, 1, false, 4, 12, 500);
+                Bike bicycle = new Bike("байк", "фиолетовый", 170, 2, true, 2, 123, 5000);
+                Bicycle bike = new Bicycle("велик", "розовый", 80, 2, true, 2, 1234, 50000);
+                Scooter scooter = new Scooter("самокатер", "голубой", 160, 1, false, 2, 12345, 500000);
                 List<Transport> list = new List<Transport>();
                 list.Add(boat);
                 list.Add(car);
                 list.Add(bicycle);
                 list.Add(bike);
                 list.Add(scooter);
-                Console.WriteLine($"Список имеющихся траспортов: {list}");
+                //for (int i = 0; i < list.Count; i++)
+                //{
+                //    Console.WriteLine($"Транспорт: {list[i].Model}");
+                //    continue;
+                //}
 
                 Console.WriteLine($"Выберите действие:\n1 - Арендовать транспорт\n2 - Выйти");
                 string action = Console.ReadLine();
@@ -50,7 +55,7 @@ namespace BankConsoleApp.Data
                 switch (action)
                 {
                     case "1":
-                        Console.WriteLine(list);
+                        
                         ChooseTransport(list);
                         break;
                     case "2":
@@ -87,9 +92,19 @@ namespace BankConsoleApp.Data
                     Console.WriteLine($"Вы выбрали: {list[index - 1].Model}");
                     list[index - 1].IsRented1();
 
-                    Console.WriteLine($"Цена {list}");
+                    Console.WriteLine($"Цена {list[index - 1].Model} составляет {list[index - 1].Price}");
+                    if (bankAccount1.Balance < list[index - 1].Price)
+                    {
+                        Console.WriteLine("У вас недостаточно средств, можете выбрать другой транспорт..");
 
+                    }
+                    else
+                    {
+                        decimal result1 = bankAccount1.Balance - list[index - 1].Price;
+                        Console.WriteLine($"Сумма за аренду транспорта была списана, баланс на данный момент: {result1}");
+                    }
                 }
+                break;
             }
             Console.ReadKey();
         }

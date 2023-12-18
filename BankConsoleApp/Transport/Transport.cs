@@ -22,17 +22,20 @@ namespace BankConsoleApp.Data
         public abstract int HasMotor { get; set; }
         public abstract void Info(string msg);
 
+
         public virtual void CompareSpeeds(List<Transport> transports) { }
         public virtual void IsRented1() 
         {
             if (IsRented)
             {
-                Console.WriteLine($"У транспорта {Model} есть бронь");
+                Console.WriteLine($"{Model}, {Color}, {MaxSpeed}, {Category}, {WheelCount}, {HasMotor}, однако у транспорта есть бронь, выберите другой транспорт..");
+                
             }
             else
             {
-                Console.WriteLine($"Транспорт - {Model} не забронирован");
+                Console.WriteLine($"{Model}, {Color}, {MaxSpeed}, {Category}, {WheelCount}, {HasMotor}, транспорт - {Model} не забронирован");
             }
+
         }
     }
 }
