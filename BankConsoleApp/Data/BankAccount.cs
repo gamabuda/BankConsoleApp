@@ -1,9 +1,34 @@
-﻿public class BankAccount
+﻿
+using BankConsoleApp.Transport;
+
+public interface IBankAccount
+{
+    string FullName { get; }
+    string AccountNumber { get; }
+    string Password { get; }
+    decimal Balance { get; }
+
+    event ConsoleColorHandler OnColorMessage;
+
+    bool Try2Replenish(decimal sum);
+    bool Try2Withdraw(decimal sum);
+}
+
+public delegate void ConsoleColorHandler(string msg, TextColor color);
+
+public enum TextColor
+{
+    Green,
+    Red,
+    Default
+}
+public class BankAccount : IBankAccount
 {
     private decimal _balance;
 
     private delegate void ConsoleColorHandler(string msg, TextColor color);
     private event ConsoleColorHandler _isSendColorMessage;
+    public event global::ConsoleColorHandler OnColorMessage;
 
     public BankAccount(string fullName, string password, decimal balance = 0)
     {
@@ -38,6 +63,8 @@
             Console.WriteLine($"Result: {Balance}$\n");
         }
     }
+
+
 
     private void PrintMessage(string msg, TextColor color)
     {
@@ -98,5 +125,12 @@
         Green,
         Red,
         Defult
+    }
+
+    public void Arend(Transport transport)
+    {
+        decimal arenda = transport.Price;
+        Balance -= arenda;
+        Console.WriteLine($"Был арендован транспорт {transport}. Списана сумма со счета в размере {arenda}. Остаток: {Balance}");
     }
 }
