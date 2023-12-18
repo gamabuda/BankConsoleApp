@@ -129,7 +129,7 @@ public class BankAccount
         return s;
     }
 
-    public bool Try2Transfer(string password, decimal sum, string recipientAccountNumber)
+    public bool Try2Transfer(string password, decimal sum)
     {
         if (_isLocked)
         {
