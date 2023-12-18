@@ -1,8 +1,5 @@
 ﻿using BankConsoleApp.Data;
 
-<<<<<<< Updated upstream
-BankAccount account = new BankAccount("295812932", "qwerty");
-=======
 Car car = new(100, "Tesla");
 BankAccount account = new("Petrov Petr Petrovich", 1000, "123");
 car.addToList(account.transports);
