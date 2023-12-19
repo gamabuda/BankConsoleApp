@@ -7,11 +7,16 @@ using System.Text.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
+using BankConsoleApp.TransportData.Types_of_transport;
+using BankConsoleApp.TransportData;
 
-namespace BankConsoleApp.Data
+namespace BankConsoleApp
 {
     public class Menu
     {
+        private static Bank myBank = new Bank(); // Создаем экземпляр банка
+        private static List<ITransport> transports = new List<ITransport>(); // Создаем список транспорта
+
         static Random rnd = new Random();
 
         static List<BankAccount> users = new List<BankAccount>();
@@ -32,14 +37,12 @@ namespace BankConsoleApp.Data
                     Console.Clear();
                     Console.WriteLine("Вы выбрали вход.");
                     Login();
-                    MainMenu();
                     break;
 
                 case ConsoleKey.D2:
                     Console.Clear();
                     Console.WriteLine("Вы выбрали регистрацию.");
                     Regestration(users);
-                    MainMenu();
                     break;
 
                 default:
@@ -64,7 +67,7 @@ namespace BankConsoleApp.Data
                 BankAccount account = new BankAccount(Username, Password, 0);
                 users.Add(account);
                 SaveToFile(users, filePath);
-                //MainMenu();
+                MainMenu(account, transports);
             }    
             else { Console.WriteLine("Упс-и. Пароль не подошел"); Thread.Sleep(1000); goto retry;  }
         }
@@ -102,7 +105,7 @@ namespace BankConsoleApp.Data
             if (user != null)
             {
                 Console.WriteLine("Вход выполнен успешно!");
-                //MainMenu();
+                MainMenu(user, transports);
             }
             else
             {
@@ -163,8 +166,12 @@ namespace BankConsoleApp.Data
             return users;
         }
 
-        static public void MainMenu()
+        static public void MainMenu(BankAccount user, List<ITransport> rentedTransports)
         {
+            myBank.TransportRented += OnTransportRented;
+            myBank.TransportReturned += OnTransportReturned;
+            myBank.BalanceChanged += OnBalanceChanged;
+
             List<BankAccount> users = new List<BankAccount>();
             Console.Clear();
             Console.WriteLine($"Рад вас видеть! Чем сегодня займемся?\n 1) Информация об аккаунте\n 2) Переводы\n 3) Снятие средств\n 4) Аренда Транспорта\n 5) Выход");
@@ -175,32 +182,47 @@ namespace BankConsoleApp.Data
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    AccountInfo();
+                    AccountInfo(user);
                     break;
                 case ConsoleKey.D2:
                     Console.Clear();
-                    TransferMenu();
+                    TransferMenu(user);
                     break;
                 case ConsoleKey.D3:
                     Console.Clear();
-                    WithdrawalMenu();
+                    WithdrawalMenu(user);
                     break;
                 case ConsoleKey.D4:
-                        Console.Clear();
+                    Console.Clear();
+                    RentTransportMenu(user, rentedTransports);
                     break;
                 case ConsoleKey.D5:
-                        Console.Clear();
-                        Console.WriteLine("Еще увидимся :(");
+                    Console.Clear();
+                    Console.WriteLine("Еще увидимся :(");
                     break;
                 default:
                     Console.WriteLine("Нет такой функции!");
                     Thread.Sleep(1000);
-                    MainMenu();
+                    MainMenu(user, rentedTransports);
                     break;
             }
         }
+        static void OnTransportRented(object sender, TransportEventArgs e)
+        {
+            Console.WriteLine($"Транспорт {e.Transport.GetType().Name} арендован!");
+        }
 
-        static public void TransferMenu()
+        static void OnTransportReturned(object sender, TransportEventArgs e)
+        {
+            Console.WriteLine($"Транспорт {e.Transport.GetType().Name} возвращен!");
+        }
+
+        static void OnBalanceChanged(object sender, BalanceChangedEventArgs e)
+        {
+            Console.WriteLine($"Баланс банка изменен. Новый баланс: {e.NewBalance}");
+        }
+
+        static public void TransferMenu(BankAccount user)
         {
             Console.WriteLine("Выберите действие:\n1) Перевести\n2) Вернуться в главное меню");
             KeyInfo = Console.ReadKey();
@@ -208,20 +230,20 @@ namespace BankConsoleApp.Data
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    Transfer();
+                    Transfer(user);
                     break;
                 case ConsoleKey.D2:
                     Console.Clear();
-                    MainMenu();
+                    MainMenu(user, transports);
                     break;
                 default:
                     Console.Clear();
-                    TransferMenu();
+                    TransferMenu(user);
                     break;
             }
         }
 
-        static public void WithdrawalMenu()
+        static public void WithdrawalMenu(BankAccount user)
         {
             Console.WriteLine("Выберите действие:\n1) Снять средства\n2) Вернуться в главное меню");
             KeyInfo = Console.ReadKey();
@@ -229,87 +251,78 @@ namespace BankConsoleApp.Data
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    Withdrawal();
+                    Withdrawal(user);
                     break;
                 case ConsoleKey.D2:
                     Console.Clear();
-                    MainMenu();
+                    MainMenu(user, transports);
                     break;
                 default:
                     Console.Clear();
-                    WithdrawalMenu();
+                    WithdrawalMenu(user);
                     break;
             }
         }
 
-        static public void Transfer()
+
+        static public void Transfer(BankAccount source)
         {
             List<BankAccount> users = LoadFromFile(filePath);
 
             Console.WriteLine("Введите логин получателя:");
             string recipientUsername = Console.ReadLine();
 
-            Console.WriteLine("Введите сумму для перевода:");
-            if (decimal.TryParse(Console.ReadLine(), out decimal transferAmount))
-            {
-                BankAccount recipient = users.FirstOrDefault(u => u.Login == recipientUsername);
-                BankAccount user = FindUser(Username, Password);
+            BankAccount recipient = users.FirstOrDefault(u => u.Login == recipientUsername);
 
-                if (recipient != null && user != null)
+            if (recipient != null)
+            {
+                Console.WriteLine("Введите сумму для перевода:");
+                if (decimal.TryParse(Console.ReadLine(), out decimal transferAmount))
                 {
-                    BankAccount.TransferOp transferDelegate = new BankAccount.TransferOp(user.Transfer);
-                    transferDelegate.Invoke(user, recipient, transferAmount);
+                    BankAccount.TransferOp transferDelegate = new BankAccount.TransferOp(source.Transfer);
+                    transferDelegate.Invoke(source, recipient, transferAmount);
+                    SaveToFile(users, filePath);
                 }
                 else
                 {
-                    Console.WriteLine("Ошибка при выполнении перевода. Проверьте данные пользователя и получателя.");
+                    Console.WriteLine("Некорректная сумма перевода.");
                 }
             }
             else
             {
-                Console.WriteLine("Некорректная сумма перевода.");
+                Console.WriteLine("Получатель не найден.");
             }
+            TransferMenu(source);
         }
 
-
-        static public void Withdrawal()
+        static public void Withdrawal(BankAccount user)
         {
-            List<BankAccount> users = LoadFromFile(filePath);
-
             Console.WriteLine("Введите сумму для снятия:");
             if (decimal.TryParse(Console.ReadLine(), out decimal withdrawalAmount))
             {
-                BankAccount user = FindUser(Username, Password);
-
                 BankAccount.WithdrawalOp withdrawalDelegate = new BankAccount.WithdrawalOp(user.Withdrawal);
                 withdrawalDelegate.Invoke(user, withdrawalAmount);
+                SaveToFile(new List<BankAccount> { user }, filePath);
+                WithdrawalMenu(user);
             }
             else
             {
                 Console.WriteLine("Некорректная сумма снятия.");
+                WithdrawalMenu(user);
             }
         }
-
-        static public BankAccount AccountInfo()
+        static public void AccountInfo(BankAccount user)
         {
-            List<BankAccount> user = LoadFromFile(filePath);
-
-            Console.WriteLine($"Ваш логин : {Username}");
-            Console.WriteLine("Ваш пароль : ");
-            for (int i = 0; i < Password.Length; i++)
+            Console.WriteLine($"Ваш логин: {user.Login}");
+            Console.Write("Ваш пароль: ");
+            for (int i = 0; i < user.Password.Length; i++)
             {
                 Console.Write('*');
             }
-            for(int i = 0; i < user.Count; i++)
-            {
-                if (user[i].Login == Username && user[i].Password == Password)
-                {
-                    Console.WriteLine($"Ваш баланс: {user[i].Balance}");
-                }
-            }
+            Console.WriteLine();
+            Console.WriteLine($"Ваш баланс: {user.Balance}");
 
-            Console.WriteLine("Что вы хотите сделать?\n1) Поменять логин\n2)Поменять Пароль\n3)Выйти");
-            
+            Console.WriteLine("Что вы хотите сделать?\n1) Поменять логин\n2) Поменять Пароль\n3) Выйти");
             KeyInfo = Console.ReadKey();
 
             switch (KeyInfo.Key)
@@ -319,43 +332,30 @@ namespace BankConsoleApp.Data
                     {
                         Console.WriteLine("Введите ваш новый логин");
                         string newLogin = Console.ReadLine();
-
-                        for (int i = 0; i < user.Count; i++)
-                        {
-                            if (user[i].Login == Username && user[i].Password == Password)
-                            {
-                                user[i].Login = newLogin;
-                                SaveToFile(user, filePath);
-                            }
-                        }
+                        user.Login = newLogin;
+                        SaveToFile(new List<BankAccount> { user }, filePath);
+                        MainMenu(user, transports);
                     }
-
                     break;
                 case ConsoleKey.D2:
-                    if(Captcha())
+                    if (Captcha())
                     {
                         Console.WriteLine("Введите ваш новый пароль");
-                        string Repasswording = Console.ReadLine();
+                        string newPassword = Console.ReadLine();
                         Console.WriteLine("Подтвердите ваш новый пароль");
-                        string RepasswordingCheck = Console.ReadLine();
-                        if(Repasswording == RepasswordingCheck)
+                        string newPasswordCheck = Console.ReadLine();
+                        if (newPassword == newPasswordCheck)
                         {
-                            for (int i = 0; i < user.Count; i++)
-                            {
-                                if (user[i].Login == Username && user[i].Password == Password)
-                                {
-                                    user[i].Password = Repasswording;
-                                    SaveToFile(user, filePath);
-                                }
-                            }
+                            user.Password = newPassword;
+                            SaveToFile(new List<BankAccount> { user }, filePath); // Save changes to file
                         }
+                        MainMenu(user, transports);
                     }
                     break;
                 case ConsoleKey.D3:
-                    MainMenu();
+                    MainMenu(user, transports);
                     break;
             }
-            return null;
         }
 
         static public bool Captcha()
@@ -370,9 +370,69 @@ namespace BankConsoleApp.Data
             string GuessTheWord = Console.ReadLine().ToLower();
             if(SecretWord == GuessTheWord)
             {
+                Console.Clear();
                 return true;
             }
             return false;
+        }
+
+        static public void RentTransportMenu(BankAccount user, List<ITransport> rentedTransports)
+        {
+            Console.WriteLine("Выберите транспорт для аренды:");
+            Console.WriteLine(" 1) Лодка\n 2) Автомобиль\n 3) Мотоцикл\n 4) Вернуться в главное меню");
+
+            KeyInfo = Console.ReadKey();
+
+            switch (KeyInfo.Key)
+            {
+                case ConsoleKey.D1:
+                    Console.Clear();
+                    RentTransport<Boat>(user, rentedTransports);
+                    break;
+                case ConsoleKey.D2:
+                    Console.Clear();
+                    RentTransport<Car>(user, rentedTransports);
+                    break;
+                case ConsoleKey.D3:
+                    Console.Clear();
+                    RentTransport<Bike>(user, rentedTransports);
+                    break;
+                case ConsoleKey.D4:
+                    Console.Clear();
+                    MainMenu(user, rentedTransports);
+                    break;
+                default:
+                    Console.Clear();
+                    RentTransportMenu(user, transports);
+                    break;
+            }
+        }
+
+        static public void RentTransport<T>(BankAccount user, List<ITransport> rentedTransports) where T : ITransport, new()
+        {
+            T newTransport = new T();
+
+            Console.WriteLine($"Вы выбрали {typeof(T).Name}: {newTransport.Model}");
+            Console.WriteLine($"Стоимость аренды: {newTransport.RentalCost} долларов");
+
+            Console.WriteLine("Хотите арендовать? (Y/N)");
+
+            KeyInfo = Console.ReadKey();
+
+            if (KeyInfo.Key == ConsoleKey.Y)
+            {
+                newTransport.Rent();
+                rentedTransports.Add(newTransport);
+                Console.WriteLine($"{typeof(T).Name} успешно арендован!\n");
+            }
+            else
+            {
+                Console.WriteLine($"{typeof(T).Name} не арендован.\n");
+            }
+
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
+            RentTransportMenu(user, rentedTransports);
         }
     }
 }

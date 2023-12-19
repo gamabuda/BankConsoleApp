@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Text.Json;
 
-namespace BankConsoleApp.Data
+namespace BankConsoleApp
 {
     public class BankAccount
     {
@@ -21,11 +21,8 @@ namespace BankConsoleApp.Data
         public string Login { get; set; }
         public string Password { get; set; }
 
-        public delegate void DepositOp(BankAccount account, decimal amount);
-
+        public delegate void TransferOp(BankAccount source, BankAccount destination, decimal amount);
         public delegate void WithdrawalOp(BankAccount account, decimal amount);
-
-        public delegate void TransferOp(BankAccount source, BankAccount destination, decimal amount);   
 
         public void Transfer(BankAccount source, BankAccount destination, decimal amount)
         {
